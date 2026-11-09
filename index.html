@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B2A41">
+<title>교회 방문·촬영 관리 | CTS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --navy:#1B2A41; --navy2:#2C3E5C; --gold:#B08D57; --gold-soft:#F4EEE4;
+  --bg:#F6F5F2; --card:#FFFFFF; --line:#E7E4DE; --ink:#1D2433; --sub:#667085; --mute:#98A2B3;
+  --red:#B42318; --red-soft:#FEF3F2; --amber:#B54708; --amber-soft:#FFFAEB;
+  --green:#067647; --green-soft:#ECFDF3; --blue:#1D4ED8; --blue-soft:#EFF4FF;
+  --violet:#5925DC; --violet-soft:#F4F3FF; --pink:#C11574; --pink-soft:#FDF2FA;
+  --r:14px; --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.hidden{display:none!important}
+
+/* ---------- 로그인 ---------- */
+#login{position:fixed;inset:0;display:grid;grid-template-columns:1.1fr 1fr;background:var(--navy);z-index:50}
+#login .photo{background:#223 url('hero.jpg') center/cover no-repeat;position:relative}
+#login .photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(27,42,65,.15),rgba(27,42,65,.55))}
+#login .photo .cap{position:absolute;left:40px;bottom:36px;color:#fff;z-index:1;font-size:13px;opacity:.85;letter-spacing:.02em}
+#login .box{display:flex;flex-direction:column;justify-content:center;padding:48px clamp(28px,6vw,80px);background:var(--bg)}
+#login .logo{height:30px;margin-bottom:40px;align-self:flex-start}
+#login h1{font-size:30px;line-height:1.25;margin:0 0 10px;color:var(--navy);font-weight:800;letter-spacing:-.03em}
+#login p{margin:0 0 28px;color:var(--sub)}
+#login form{display:flex;flex-direction:column;gap:10px;max-width:360px}
+#login input[type=password]{height:50px;border:1px solid var(--line);border-radius:12px;padding:0 16px;background:#fff;font-size:16px}
+#login input[type=password]:focus{outline:2px solid var(--gold);border-color:transparent}
+#login label.chk{display:flex;gap:8px;align-items:center;color:var(--sub);font-size:14px}
+#login .err{color:var(--red);font-size:14px;min-height:20px}
+.btn{height:44px;border-radius:11px;border:1px solid var(--line);background:#fff;padding:0 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:#cfcac0}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--navy2)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn.sm{height:34px;padding:0 12px;font-size:13px;border-radius:9px}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--sub)}
+#login .btn.primary{height:50px;font-size:16px}
+#login .note{margin-top:26px;font-size:12.5px;color:var(--mute);max-width:360px}
+
+/* ---------- 레이아웃 ---------- */
+header.top{position:sticky;top:0;z-index:20;background:rgba(246,245,242,.92);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 20px}
+.top .logo{height:22px}
+.top .ttl{font-weight:800;color:var(--navy);font-size:16px;letter-spacing:-.02em}
+.top .today{color:var(--sub);font-size:13px}
+.top nav{display:flex;gap:4px;margin-left:auto}
+.top nav button{border:0;background:transparent;padding:8px 14px;border-radius:9px;cursor:pointer;color:var(--sub);font-weight:600}
+.top nav button.on{background:var(--navy);color:#fff}
+.top .acts{display:flex;gap:6px}
+main{max-width:1180px;margin:0 auto;padding:22px 20px 110px}
+h2.sec{font-size:15px;margin:28px 0 12px;color:var(--navy);display:flex;align-items:center;gap:8px;font-weight:800}
+h2.sec .cnt{font-size:12px;color:var(--sub);font-weight:600;background:#EDEBE6;border-radius:20px;padding:1px 8px}
+h2.sec .more{margin-left:auto;font-size:13px;color:var(--sub);font-weight:600;cursor:pointer;background:none;border:0}
+.hello{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hello h1{margin:0;font-size:24px;color:var(--navy);letter-spacing:-.03em;font-weight:800}
+.hello p{margin:4px 0 0;color:var(--sub)}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;cursor:pointer;transition:transform .15s}
+.kpi:hover{transform:translateY(-1px)}
+.kpi .l{font-size:12.5px;color:var(--sub);font-weight:600}
+.kpi .v{font-size:30px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1.2;margin-top:4px}
+.kpi .v small{font-size:14px;color:var(--sub);font-weight:600;margin-left:2px}
+.kpi.warn .v{color:var(--red)}
+
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.list{padding:4px 0}
+.row{display:flex;gap:14px;padding:13px 18px;border-top:1px solid #F0EEE9;align-items:flex-start;cursor:pointer}
+.row:first-child{border-top:0}
+.row:hover{background:#FBFAF8}
+.dbox{flex:0 0 52px;text-align:center;border-radius:10px;background:var(--gold-soft);padding:6px 0;color:var(--navy)}
+.dbox .m{font-size:11px;font-weight:700;color:var(--gold)}
+.dbox .d{font-size:20px;font-weight:800;line-height:1.1}
+.dbox .w{font-size:11px;color:var(--sub)}
+.dbox.today{background:var(--navy);color:#fff}.dbox.today .m,.dbox.today .w{color:#E9DCC6}
+.row .main{flex:1;min-width:0}
+.row .t{font-weight:700;color:var(--ink)}
+.row .s{color:var(--sub);font-size:13.5px;margin-top:2px}
+.row .x{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+.empty{padding:28px 18px;text-align:center;color:var(--mute);font-size:14px}
+.chip{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:20px;font-size:12px;font-weight:700;background:#F2F4F7;color:#475467;white-space:nowrap}
+.chip.협의중,.chip.c-협의{background:var(--amber-soft);color:var(--amber)}
+.c-확정{background:var(--blue-soft)!important;color:var(--blue)!important}
+.c-촬영완료{background:var(--violet-soft)!important;color:var(--violet)!important}
+.c-편집중{background:var(--pink-soft)!important;color:var(--pink)!important}
+.c-송출완료{background:var(--green-soft)!important;color:var(--green)!important}
+.c-취소{background:#F2F4F7!important;color:var(--mute)!important;text-decoration:line-through}
+.c-협의중{background:var(--amber-soft)!important;color:var(--amber)!important}
+.c-red{background:var(--red-soft)!important;color:var(--red)!important}
+.c-amber{background:var(--amber-soft)!important;color:var(--amber)!important}
+.c-gold{background:var(--gold-soft)!important;color:#8A6A3A!important}
+.c-navy{background:#EEF2F6!important;color:var(--navy)!important}
+.c-mute{background:#F2F4F7!important;color:var(--mute)!important}
+.c-green{background:var(--green-soft)!important;color:var(--green)!important}
+
+/* 교회 */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.toolbar input[type=search],.toolbar select{height:42px;border:1px solid var(--line);background:#fff;border-radius:11px;padding:0 12px}
+.toolbar input[type=search]{flex:1;min-width:200px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:16px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,transform .15s}
+.ccard:hover{border-color:#cfc6b6;transform:translateY(-1px)}
+.ccard .hd{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ccard .nm{font-size:17px;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.ccard .meta{font-size:13px;color:var(--sub)}
+.ccard .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid #F0EEE9;padding-top:10px}
+.ccard .stats div{font-size:12px;color:var(--sub)}
+.ccard .stats b{display:block;font-size:14px;color:var(--ink)}
+.ccard .todo{font-size:13px;color:#344054;background:#FAF9F6;border-radius:9px;padding:8px 10px}
+.ccard .todo:before{content:"다음 할 일  ";color:var(--gold);font-weight:700}
+
+/* 기록 */
+.vitem{padding:16px 18px;border-top:1px solid #F0EEE9}
+.vitem:first-child{border-top:0}
+.vitem .hd{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.vitem .dt{font-weight:800;color:var(--navy)}
+.vitem .ch{font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-color:#d9d3c7;text-underline-offset:3px}
+.vitem .body{margin-top:8px;color:#344054;white-space:pre-wrap}
+.vitem .kv{margin-top:8px;display:grid;grid-template-columns:110px 1fr;gap:4px 10px;font-size:13.5px}
+.vitem .kv span:nth-child(odd){color:var(--sub)}
+.vitem .promise{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#FAF9F6;border:1px solid #EFECE6;border-radius:11px;padding:10px 12px}
+.vitem .promise .p{flex:1;min-width:180px;font-size:14px}
+.vitem .promise .p b{color:var(--gold);margin-right:6px}
+
+/* 달력 */
+.cal{padding:14px}
+.cal .ch{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cal .ch b{font-size:17px;color:var(--navy);min-width:110px;text-align:center}
+.cal table{width:100%;border-collapse:collapse;table-layout:fixed}
+.cal th{font-size:12px;color:var(--sub);font-weight:600;padding:6px 0}
+.cal th:first-child{color:var(--red)}
+.cal td{height:84px;vertical-align:top;border:1px solid #F0EEE9;padding:5px;cursor:pointer;font-size:12px}
+.cal td.out{background:#FBFAF8;color:#C5C9D0}
+.cal td .n{font-weight:700;font-size:12.5px}
+.cal td.today .n{background:var(--navy);color:#fff;border-radius:20px;padding:0 7px;display:inline-block}
+.cal td.sel{outline:2px solid var(--gold);outline-offset:-2px}
+.cal td .ev{margin-top:3px;border-radius:5px;padding:1px 5px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.cal td .ev.v{background:#EEF2F6;color:var(--navy)}
+
+/* 상세 패널 */
+.scrim{position:fixed;inset:0;background:rgba(16,24,40,.38);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg);z-index:41;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer .dh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;background:#fff}
+.drawer .dh h3{margin:0;font-size:20px;color:var(--navy);letter-spacing:-.02em}
+.drawer .dh .sub{color:var(--sub);font-size:13.5px;margin-top:2px}
+.drawer .db{overflow:auto;padding:16px 22px 40px;flex:1}
+.drawer .close{margin-left:auto}
+.info{display:grid;grid-template-columns:110px 1fr;gap:7px 12px;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.info span:nth-child(odd){color:var(--sub)}
+.info a{color:var(--blue);word-break:break-all}
+.dacts{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+
+/* 폼 */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:45;pointer-events:none}
+.modal .panel{pointer-events:auto;background:#fff;border-radius:18px;width:min(640px,94vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(16,24,40,.25)}
+.modal .ph{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.modal .ph h3{margin:0;font-size:18px;color:var(--navy)}
+.modal .panel>form{display:flex;flex-direction:column;max-height:90vh;min-height:0}
+.modal .pb{padding:18px 22px;overflow:auto;flex:1;min-height:0;-webkit-overflow-scrolling:touch}
+.modal .pf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f.full{grid-column:1/-1}
+.f label{font-size:12.5px;color:var(--sub);font-weight:700}
+.f label em{color:var(--red);font-style:normal}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;min-height:44px}
+.f textarea{min-height:84px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+.hint{font-size:12px;color:var(--mute)}
+
+.fab{position:fixed;right:22px;bottom:26px;z-index:30;height:54px;padding:0 22px;border-radius:30px;background:var(--navy);color:#fff;border:0;font-weight:800;box-shadow:0 8px 24px rgba(27,42,65,.35);cursor:pointer;font-size:15px}
+.fabmenu{position:fixed;right:22px;bottom:90px;z-index:30;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.fabmenu button{height:44px;border-radius:24px;border:1px solid var(--line);background:#fff;padding:0 18px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.2s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(246,245,242,.6);z-index:55}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid #E2DED6;border-top-color:var(--navy);animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.tabbar{display:none}
+
+/* 인쇄용 브리핑 */
+#print{display:none}
+@media print{
+  body>*:not(#print){display:none!important}
+  #print{display:block;padding:0;color:#000;font-size:11pt}
+  #print h1{font-size:20pt;margin:0 0 2pt}
+  #print .pm{color:#555;margin-bottom:12pt}
+  #print h2{font-size:12pt;border-bottom:1.5pt solid #1B2A41;padding-bottom:3pt;margin:16pt 0 6pt;color:#1B2A41}
+  #print table{width:100%;border-collapse:collapse}
+  #print td,#print th{border:0.5pt solid #bbb;padding:4pt 6pt;vertical-align:top;text-align:left;font-size:10pt}
+  #print th{background:#F1F1F1;width:22%}
+  @page{size:A4;margin:16mm}
+}
+
+/* ---------- 모바일 ---------- */
+@media (max-width:860px){
+  #login{grid-template-columns:1fr;grid-template-rows:34vh 1fr}
+  #login .photo .cap{left:22px;bottom:16px}
+  #login .box{padding:28px 24px;justify-content:flex-start}
+  #login .logo{margin-bottom:22px;height:26px}
+  #login h1{font-size:25px}
+  .top nav{display:none}
+  .top .in{padding:10px 16px;gap:10px}
+  .top .today{display:none}
+  .top .ttl{font-size:14.5px;white-space:nowrap}
+  .top .acts .btn{padding:0 8px}
+  #refreshBtn{display:none}
+  .toolbar input[type=search]{flex:1 1 100%;min-width:0}
+  .toolbar select{flex:1 1 calc(50% - 4px);min-width:0}
+  html,body{overflow-x:hidden}
+  .top .acts{margin-left:auto}
+  main{padding:16px 14px 120px}
+  .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpis .kpi:first-child{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between}
+  .kpi{padding:13px 15px}.kpi .v{font-size:26px}
+  .grid2{grid-template-columns:1fr;gap:0}
+  .hello h1{font-size:21px}
+  .quick{display:none}
+  .fgrid{grid-template-columns:1fr}
+  .modal{align-items:flex-end}
+  .modal .panel{width:100%;border-radius:18px 18px 0 0;max-height:92vh}
+  .modal .panel>form{max-height:92vh}
+  .cal td{height:58px;padding:3px}
+  .cal td .ev{font-size:0;height:6px;padding:0;margin-top:3px;border-radius:3px;background:var(--navy)!important}
+  .cal td .ev.v{background:var(--gold)!important}
+  .cal td .ev.c-취소{background:#D0D5DD!important}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:25;background:#fff;border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar button{flex:1;border:0;background:none;padding:6px 0;font-size:12px;font-weight:700;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+  .tabbar button svg{width:22px;height:22px}
+  .tabbar button.on{color:var(--navy)}
+  .fab{bottom:calc(76px + env(safe-area-inset-bottom));right:16px;height:50px;padding:0 18px}
+  .fabmenu{bottom:calc(136px + env(safe-area-inset-bottom));right:16px}
+  .info,.vitem .kv{grid-template-columns:92px 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<section id="login">
+  <div class="photo"><div class="cap">교회와 함께 걷는 기록</div></div>
+  <div class="box">
+    <img class="logo" src="logo.png" alt="CTS기독교TV">
+    <h1>교회 방문·촬영<br>관리</h1>
+    <p>교회 현황, 목사님과 나눈 이야기, 뉴스·신앙에세이 촬영 일정을 한곳에서.</p>
+    <form id="loginForm" autocomplete="on">
+      <input type="text" name="username" value="cts-church-desk" autocomplete="username" class="hidden" aria-hidden="true">
+      <input id="pw" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+      <label class="chk"><input id="remember" type="checkbox" checked> 이 기기에서 로그인 유지</label>
+      <div class="err" id="loginErr"></div>
+      <button class="btn primary" type="submit">들어가기</button>
+    </form>
+    <div class="note">기록은 구글 시트에만 저장됩니다. 이 페이지에는 화면만 있고, 비밀번호를 넣어야 내용을 불러옵니다.</div>
+  </div>
+</section>
+
+<!-- 앱 -->
+<div id="app" class="hidden">
+  <header class="top"><div class="in">
+    <img class="logo" src="logo.png" alt="CTS">
+    <div><div class="ttl">교회 방문·촬영 관리</div></div>
+    <div class="today" id="todayTxt"></div>
+    <nav id="nav">
+      <button data-v="home" class="on">홈</button>
+      <button data-v="churches">교회</button>
+      <button data-v="visits">방문 기록</button>
+      <button data-v="shoots">촬영 일정</button>
+    </nav>
+    <div class="acts">
+      <button class="btn sm ghost" id="refreshBtn" title="새로고침">새로고침</button>
+      <a class="btn sm" id="sheetLink" target="_blank" rel="noopener">시트</a>
+      <button class="btn sm ghost" id="logoutBtn" title="이 기기에서 로그아웃">나가기</button>
+    </div>
+  </div></header>
+
+  <main>
+    <!-- 홈 -->
+    <section id="v-home">
+      <div class="hello">
+        <div><h1 id="helloTitle">오늘의 교회 일정</h1><p id="helloSub"></p></div>
+        <div class="quick">
+          <button class="btn" data-new="visit">+ 방문 기록</button>
+          <button class="btn" data-new="shoot">+ 촬영 일정</button>
+          <button class="btn" data-new="church">+ 교회</button>
+        </div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid2">
+        <div>
+          <h2 class="sec">다가오는 촬영·취재 <span class="cnt" id="upCnt"></span><button class="more" data-go="shoots">전체 일정 ›</button></h2>
+          <div class="card list" id="upList"></div>
+          <h2 class="sec">최근 방문 <button class="more" data-go="visits">전체 기록 ›</button></h2>
+          <div class="card list" id="recentList"></div>
+        </div>
+        <div>
+          <h2 class="sec">챙겨야 할 약속 <span class="cnt" id="fuCnt"></span></h2>
+          <div class="card list" id="fuList"></div>
+          <h2 class="sec">오래 찾아뵙지 못한 교회 <span class="cnt" id="staleCnt"></span></h2>
+          <div class="card list" id="staleList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 교회 -->
+    <section id="v-churches" class="hidden">
+      <div class="hello"><div><h1>교회</h1><p id="chSub"></p></div>
+        <div class="quick"><button class="btn primary" data-new="church">+ 교회 추가</button></div></div>
+      <div class="toolbar">
+        <input type="search" id="chQ" placeholder="교회명·목사님·지역·사역 검색">
+        <select id="chRegion"><option value="">전체 지역</option></select>
+        <select id="chStage"><option value="">전체 관계 단계</option></select>
+        <select id="chSort">
+          <option value="days">오래 못 간 순</option>
+          <option value="recent">최근 방문 순</option>
+          <option value="name">이름 순</option>
+          <option value="next">촬영 임박 순</option>
+        </select>
+      </div>
+      <div class="cgrid" id="chGrid"></div>
+    </section>
+
+    <!-- 방문 기록 -->
+    <section id="v-visits" class="hidden">
+      <div class="hello"><div><h1>방문 기록</h1><p>목사님과 나눈 이야기와 약속을 남깁니다.</p></div>
+        <div class="quick"><button class="btn primary" data-new="visit">+ 방문 기록</button></div></div>
+      <div class="toolbar">
+        <input type="search" id="vQ" placeholder="내용 검색">
+        <select id="vChurch"><option value="">전체 교회</option></select>
+        <select id="vTopic"><option value="">전체 주제</option></select>
+        <select id="vStatus"><option value="">후속 전체</option><option value="open">처리 안 된 약속만</option></select>
+      </div>
+      <div class="card" style="margin-top:16px" id="vList"></div>
+    </section>
+
+    <!-- 촬영 일정 -->
+    <section id="v-shoots" class="hidden">
+      <div class="hello"><div><h1>촬영 일정</h1><p>뉴스·신앙에세이·설교·행사 촬영을 관리합니다.</p></div>
+        <div class="quick"><button class="btn primary" data-new="shoot">+ 촬영 일정</button></div></div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="card cal" id="cal"></div>
+        <div>
+          <h2 class="sec" style="margin-top:0" id="dayTitle">선택한 날</h2>
+          <div class="card list" id="dayList"></div>
+          <h2 class="sec">진행 중인 일정 <span class="cnt" id="pipeCnt"></span></h2>
+          <div class="card list" id="pipeList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <button data-v="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>홈</button>
+    <button data-v="churches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M9 5h6M5 21V12l7-4 7 4v9M10 21v-5h4v5"/></svg>교회</button>
+    <button data-v="visits"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/></svg>기록</button>
+    <button data-v="shoots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>일정</button>
+  </nav>
+
+  <div class="fabmenu hidden" id="fabmenu">
+    <button data-new="visit">방문 기록 쓰기</button>
+    <button data-new="shoot">촬영 일정 넣기</button>
+    <button data-new="church">교회 추가</button>
+  </div>
+  <button class="fab" id="fab">+ 기록</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="modal hidden" id="modal"><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
+<div class="loading hidden" id="loading"><div class="spin"></div></div>
+<div id="print"></div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbwntulVsvXUmwckgrQPmGC5j3XY6N2BhO-97asr12O5e7LleLytzxi4B1rYMCwPzgQU/exec';
+const SHEET_FALLBACK = 'https://docs.google.com/spreadsheets/d/15deV_1-piyj_eIzwxU5Y-saxSGuueGKS3OawwosxMYo/edit';
+const KEY_STORE = 'cts-church-desk-key';
+let KEY = localStorage.getItem(KEY_STORE) || sessionStorage.getItem(KEY_STORE) || '';
+let D = null; // 데이터
+let VIEW = 'home';
+let calYM = null, calSel = null;
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const WD = ['일','월','화','수','목','금','토'];
+const pd = s => { if(!s || !/^\d{4}-\d{2}-\d{2}/.test(s)) return null; const [y,m,d]=s.slice(0,10).split('-').map(Number); return new Date(y,m-1,d); };
+const ymd = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const TODAY = () => pd(D?.today) || new Date(new Date().toDateString());
+const diff = s => { const d = pd(s); return d ? Math.round((d - TODAY())/86400000) : null; };
+const fmtD = s => { const d = pd(s); return d ? `${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})` : ''; };
+const fmtShort = s => { const d = pd(s); return d ? `${d.getMonth()+1}.${d.getDate()} (${WD[d.getDay()]})` : ''; };
+const rel = s => { const n = diff(s); if(n===null) return ''; if(n===0) return '오늘'; if(n===1) return '내일'; if(n===-1) return '어제'; return n>0 ? `${n}일 뒤` : `${-n}일 전`; };
+const cls = s => 'c-' + String(s||'').replace(/\s/g,'');
+const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),2200); };
+const busy = on => $('#loading').classList.toggle('hidden', !on);
+
+async function api(action, data){
+  const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ key: KEY, action, data }) });
+  const j = await res.json();
+  if(!j.ok){ const e = new Error(j.error || '오류'); e.auth = j.auth === false; throw e; }
+  return j.data;
+}
+
+/* ---------- 로그인 ---------- */
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  KEY = $('#pw').value.trim();
+  $('#loginErr').textContent = '';
+  busy(true);
+  try {
+    D = await api('load');
+    ($('#remember').checked ? localStorage : sessionStorage).setItem(KEY_STORE, KEY);
+    enter();
+  } catch(err){ $('#loginErr').textContent = err.message; }
+  finally { busy(false); }
+});
+
+async function boot(){
+  if(!KEY) return;
+  busy(true);
+  try { D = await api('load'); enter(); }
+  catch(err){ if(err.auth){ localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); } $('#loginErr').textContent = err.auth ? '' : err.message; }
+  finally { busy(false); }
+}
+
+function enter(){
+  $('#login').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  $('#sheetLink').href = D.sheetUrl || SHEET_FALLBACK;
+  fillFilters();
+  render();
+}
+
+function logout(){ localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); location.reload(); }
+
+/* ---------- 파생 데이터 ---------- */
+function churchStats(){
+  const by = {};
+  D.churches.forEach(c => by[c.name] = c);
+  return by;
+}
+function lastVisitOf(name){
+  const v = D.visits.filter(x => x.church === name && x.date).sort((a,b)=> b.date.localeCompare(a.date));
+  return v[0]?.date || '';
+}
+function nextShootOf(name){
+  const t = ymd(TODAY());
+  const s = D.shoots.filter(x => x.church === name && x.date >= t && x.status !== '취소').sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  return s[0] || null;
+}
+function enrich(){
+  D.churches.forEach(c => {
+    c._last = lastVisitOf(c.name);
+    c._days = c._last ? -diff(c._last) : null;
+    c._visits = D.visits.filter(v => v.church === c.name).length;
+    c._next = nextShootOf(c.name);
+  });
+}
+
+/* ---------- 렌더 ---------- */
+function render(){
+  enrich();
+  const t = TODAY();
+  $('#todayTxt').textContent = `${t.getFullYear()}년 ${t.getMonth()+1}월 ${t.getDate()}일 (${WD[t.getDay()]})`;
+  renderHome(); renderChurches(); renderVisits(); renderShoots();
+  show(VIEW);
+}
+
+function show(v){
+  VIEW = v;
+  ['home','churches','visits','shoots'].forEach(k => $('#v-'+k).classList.toggle('hidden', k!==v));
+  $$('#nav button, #tabbar button').forEach(b => b.classList.toggle('on', b.dataset.v===v));
+  window.scrollTo({top:0});
+}
+
+function dbox(s){
+  const d = pd(s); if(!d) return `<div class="dbox"><div class="d">-</div></div>`;
+  return `<div class="dbox ${diff(s)===0?'today':''}"><div class="m">${d.getMonth()+1}월</div><div class="d">${d.getDate()}</div><div class="w">${WD[d.getDay()]}</div></div>`;
+}
+function shootRow(s){
+  const perm = (s.permission==='확인 전' && ['편집 중','송출 완료','촬영 완료'].includes(s.status)) ? `<span class="chip c-red">게시 허락 확인 전</span>` : '';
+  return `<div class="row" data-shoot="${esc(s.id)}">${dbox(s.date)}
+    <div class="main"><div class="t">${esc(s.church)}${s.title?` · ${esc(s.title)}`:''}</div>
+    <div class="s">${[s.time, s.kind, s.place, s.owner].filter(Boolean).map(esc).join(' · ')}</div>
+    <div class="x"><span class="chip ${cls(s.status)}">${esc(s.status||'상태 없음')}</span>${s.kind?`<span class="chip c-gold">${esc(s.kind)}</span>`:''}${perm}<span class="chip c-mute">${rel(s.date)}</span></div></div></div>`;
+}
+const empty = m => `<div class="empty">${m}</div>`;
+
+function renderHome(){
+  const t = ymd(TODAY());
+  const t14 = ymd(new Date(TODAY().getTime()+14*86400000));
+  const t7 = ymd(new Date(TODAY().getTime()+7*86400000));
+  const ym = t.slice(0,7);
+  const up = D.shoots.filter(s => s.date>=t && s.date<=t14 && s.status!=='취소').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const fu = D.visits.filter(v => v.due && v.status!=='완료' && v.due<=t7 && v.promise).sort((a,b)=>a.due.localeCompare(b.due));
+  const overdue = D.visits.filter(v => v.due && v.status!=='완료' && v.due<t).length;
+  const stale = D.churches.filter(c => c._days===null || c._days>=60).sort((a,b)=>(b._days??9999)-(a._days??9999));
+  const monthVisits = D.visits.filter(v => (v.date||'').startsWith(ym)).length;
+
+  $('#helloTitle').textContent = up.filter(s=>s.date===t).length ? `오늘 촬영 ${up.filter(s=>s.date===t).length}건이 있습니다` : '오늘의 교회 일정';
+  $('#helloSub').textContent = `관리 교회 ${D.churches.length}곳 · 이번 달 방문 ${monthVisits}회`;
+  $('#kpis').innerHTML = [
+    ['관리 교회', D.churches.length, '곳', 'churches', ''],
+    ['이번 달 방문', monthVisits, '회', 'visits', ''],
+    ['14일 내 촬영', up.length, '건', 'shoots', ''],
+    ['기한 지난 약속', overdue, '건', 'visits', overdue?'warn':''],
+    ['60일+ 못 간 교회', stale.length, '곳', 'churches', '']
+  ].map(k => `<div class="kpi ${k[4]}" data-go="${k[3]}"><div class="l">${k[0]}</div><div class="v">${k[1]}<small>${k[2]}</small></div></div>`).join('');
+
+  $('#upCnt').textContent = up.length;
+  $('#upList').innerHTML = up.length ? up.slice(0,8).map(shootRow).join('') : empty('앞으로 2주 안에 잡힌 촬영이 없습니다');
+
+  $('#fuCnt').textContent = fu.length;
+  $('#fuList').innerHTML = fu.length ? fu.map(v => {
+    const n = diff(v.due);
+    const c = n<0 ? 'c-red' : n<=2 ? 'c-amber' : 'c-navy';
+    return `<div class="row" data-church="${esc(v.church)}"><div class="main">
+      <div class="t">${esc(v.promise)}</div>
+      <div class="s">${esc(v.church)} · ${esc(v.met||'')} · ${fmtShort(v.date)} 방문 때</div>
+      <div class="x"><span class="chip ${c}">${n<0?`${-n}일 지남`:n===0?'오늘까지':`${n}일 남음`} · ${fmtShort(v.due)}</span><span class="chip c-mute">${esc(v.status||'대기')}</span></div></div>
+      <button class="btn sm" data-done="${esc(v.id)}">완료</button></div>`;
+  }).join('') : empty('밀린 약속이 없습니다');
+
+  $('#staleCnt').textContent = stale.length;
+  $('#staleList').innerHTML = stale.length ? stale.slice(0,8).map(c => `<div class="row" data-church="${esc(c.name)}"><div class="main">
+      <div class="t">${esc(c.name)}</div><div class="s">${[c.region,c.pastor&&c.pastor+' 목사',c.stage].filter(Boolean).map(esc).join(' · ')}</div>
+      ${c.todo?`<div class="s" style="color:#344054">› ${esc(c.todo)}</div>`:''}</div>
+      <span class="chip ${c._days===null?'c-amber':'c-red'}">${c._days===null?'방문 기록 없음':c._days+'일 전'}</span></div>`).join('') : empty('모든 교회를 최근 60일 안에 찾아뵈었습니다');
+
+  const rc = [...D.visits].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,4);
+  $('#recentList').innerHTML = rc.length ? rc.map(v => `<div class="row" data-church="${esc(v.church)}">${dbox(v.date)}<div class="main">
+      <div class="t">${esc(v.church)} <span style="color:var(--sub);font-weight:500">· ${esc(v.met||'')}</span></div>
+      <div class="s">${esc((v.summary||'').slice(0,90))}${(v.summary||'').length>90?'…':''}</div>
+      <div class="x">${v.topic?`<span class="chip c-gold">${esc(v.topic)}</span>`:''}${v.purpose?`<span class="chip">${esc(v.purpose)}</span>`:''}</div></div></div>`).join('') : empty('아직 방문 기록이 없습니다');
+}
+
+function fillFilters(){
+  const L = D.lists || {};
+  const opt = (sel, arr, first) => { const el=$(sel); const v=el.value; el.innerHTML = `<option value="">${first}</option>` + (arr||[]).map(x=>`<option>${esc(x)}</option>`).join(''); el.value=v; };
+  opt('#chRegion', L['지역(지사)'], '전체 지역');
+  opt('#chStage', L['관계 단계'], '전체 관계 단계');
+  opt('#vTopic', L['주제'], '전체 주제');
+  opt('#vChurch', D.churches.map(c=>c.name), '전체 교회');
+}
+
+function renderChurches(){
+  const q = $('#chQ').value.trim().toLowerCase(), rg = $('#chRegion').value, st = $('#chStage').value, so = $('#chSort').value;
+  let arr = D.churches.filter(c => (!rg || c.region===rg) && (!st || c.stage===st) &&
+    (!q || [c.name,c.pastor,c.region,c.ministry,c.denom,c.memo,c.todo].join(' ').toLowerCase().includes(q)));
+  const big = 99999;
+  arr.sort((a,b) => so==='name' ? a.name.localeCompare(b.name,'ko')
+    : so==='recent' ? (b._last||'').localeCompare(a._last||'')
+    : so==='next' ? ((a._next?.date)||'9999').localeCompare((b._next?.date)||'9999')
+    : (b._days??big)-(a._days??big));
+  $('#chSub').textContent = `${arr.length}곳` + (arr.length!==D.churches.length ? ` (전체 ${D.churches.length}곳)` : '');
+  $('#chGrid').innerHTML = arr.length ? arr.map(c => {
+    const dayChip = c._days===null ? '<span class="chip c-amber">방문 기록 없음</span>' : c._days>=60 ? `<span class="chip c-red">${c._days}일 전 방문</span>` : '';
+    return `<div class="ccard" data-church="${esc(c.name)}">
+      <div class="hd"><div><div class="nm">${esc(c.name)}</div><div class="meta">${[c.region,c.denom,c.pastor&&c.pastor+' 목사'].filter(Boolean).map(esc).join(' · ')}</div></div>
+      ${c.stage?`<span class="chip ${c.stage==='핵심 협력'?'c-navy':c.stage==='휴면'?'c-mute':'c-gold'}">${esc(c.stage)}</span>`:''}</div>
+      ${dayChip?`<div>${dayChip}</div>`:''}
+      <div class="stats"><div>최근 방문<b>${c._last?fmtShort(c._last):'-'}</b></div><div>다음 촬영<b>${c._next?fmtShort(c._next.date):'-'}</b></div></div>
+      ${c.todo?`<div class="todo">${esc(c.todo)}</div>`:''}
+    </div>`; }).join('') : `<div class="card">${empty('조건에 맞는 교회가 없습니다')}</div>`;
+}
+
+function visitItem(v, showChurch=true){
+  const n = v.due ? diff(v.due) : null;
+  const dueChip = v.due ? `<span class="chip ${v.status==='완료'?'c-mute':n<0?'c-red':n<=2?'c-amber':'c-navy'}">${v.status==='완료'?'완료':n<0?`${-n}일 지남`:n===0?'오늘까지':`${n}일 남음`} · ${fmtShort(v.due)}</span>` : '';
+  return `<div class="vitem">
+    <div class="hd"><span class="dt">${fmtD(v.date)}</span>${showChurch?`<span class="ch" data-church="${esc(v.church)}">${esc(v.church)}</span>`:''}
+      ${v.met?`<span style="color:var(--sub)">${esc(v.met)}</span>`:''}
+      ${v.purpose?`<span class="chip">${esc(v.purpose)}</span>`:''}${v.topic?`<span class="chip c-gold">${esc(v.topic)}</span>`:''}</div>
+    ${v.summary?`<div class="body">${esc(v.summary)}</div>`:''}
+    ${(v.request||v.note||v.owner)?`<div class="kv">${v.request?`<span>목사님 요청</span><span>${esc(v.request)}</span>`:''}${v.note?`<span>비고</span><span>${esc(v.note)}</span>`:''}${v.owner?`<span>담당</span><span>${esc(v.owner)}</span>`:''}</div>`:''}
+    ${v.promise?`<div class="promise"><div class="p"><b>약속</b>${esc(v.promise)}</div>${dueChip}
+      ${v.status!=='완료'?`<button class="btn sm" data-done="${esc(v.id)}">완료로</button>`:`<button class="btn sm ghost" data-undo="${esc(v.id)}">되돌리기</button>`}</div>`:''}
+  </div>`;
+}
+
+function renderVisits(){
+  const q = $('#vQ').value.trim().toLowerCase(), ch = $('#vChurch').value, tp = $('#vTopic').value, st = $('#vStatus').value;
+  const arr = D.visits.filter(v => (!ch || v.church===ch) && (!tp || v.topic===tp) && (!st || (v.promise && v.status!=='완료')) &&
+    (!q || [v.church,v.met,v.summary,v.request,v.promise,v.note].join(' ').toLowerCase().includes(q)))
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('#vList').innerHTML = arr.length ? arr.map(v=>visitItem(v)).join('') : empty('기록이 없습니다');
+}
+
+function renderShoots(){
+  if(!calYM){ const t=TODAY(); calYM=[t.getFullYear(), t.getMonth()]; calSel = ymd(t); }
+  const [y,m] = calYM;
+  const first = new Date(y,m,1), start = new Date(y,m,1-first.getDay());
+  const t = ymd(TODAY());
+  let h = `<div class="ch"><button class="btn sm" id="calPrev">‹</button><b>${y}년 ${m+1}월</b><button class="btn sm" id="calNext">›</button><button class="btn sm ghost" id="calToday">오늘</button></div>
+    <table><tr>${WD.map(w=>`<th>${w}</th>`).join('')}</tr>`;
+  for(let i=0;i<42;i++){
+    const d = new Date(start.getTime()); d.setDate(start.getDate()+i);
+    if(i%7===0) h+='<tr>';
+    const k = ymd(d);
+    const ev = D.shoots.filter(s=>s.date===k).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const vv = D.visits.filter(v=>v.date===k);
+    h += `<td class="${d.getMonth()!==m?'out':''} ${k===t?'today':''} ${k===calSel?'sel':''}" data-day="${k}"><span class="n">${d.getDate()}</span>
+      ${ev.slice(0,3).map(s=>`<div class="ev chip ${cls(s.status)}" title="${esc(s.church+' '+(s.title||''))}">${esc((s.time?s.time+' ':'')+s.church.replace(/^예시\)\s*/,''))}</div>`).join('')}
+      ${vv.slice(0,1).map(v=>`<div class="ev v" title="방문">방문 ${esc(v.church.replace(/^예시\)\s*/,''))}</div>`).join('')}</td>`;
+    if(i%7===6) h+='</tr>';
+    if(i===34 && d.getMonth()!==m) { h+='</tr>'; break; }
+  }
+  h += '</table>';
+  $('#cal').innerHTML = h;
+  $('#calPrev').onclick = () => { calYM = m===0?[y-1,11]:[y,m-1]; renderShoots(); };
+  $('#calNext').onclick = () => { calYM = m===11?[y+1,0]:[y,m+1]; renderShoots(); };
+  $('#calToday').onclick = () => { const tt=TODAY(); calYM=[tt.getFullYear(),tt.getMonth()]; calSel=ymd(tt); renderShoots(); };
+
+  const day = D.shoots.filter(s=>s.date===calSel).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const dv = D.visits.filter(v=>v.date===calSel);
+  $('#dayTitle').innerHTML = `${fmtD(calSel)} <button class="more" data-new="shoot" data-date="${calSel}">+ 이 날 촬영 넣기</button>`;
+  $('#dayList').innerHTML = (day.length||dv.length) ? day.map(shootRow).join('') + dv.map(v=>`<div class="row" data-church="${esc(v.church)}"><div class="main"><div class="t">방문 · ${esc(v.church)}</div><div class="s">${esc(v.met||'')} ${esc((v.summary||'').slice(0,60))}</div></div></div>`).join('') : empty('이 날은 일정이 없습니다');
+  const pipe = D.shoots.filter(s=>['협의 중','확정','촬영 완료','편집 중'].includes(s.status)).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  $('#pipeCnt').textContent = pipe.length;
+  $('#pipeList').innerHTML = pipe.length ? pipe.map(shootRow).join('') : empty('진행 중인 일정이 없습니다');
+}
+
+/* ---------- 교회 상세 ---------- */
+function openChurch(name){
+  const c = D.churches.find(x=>x.name===name);
+  if(!c){ toast('교회 현황에 없는 교회입니다'); return; }
+  const vs = D.visits.filter(v=>v.church===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const ss = D.shoots.filter(s=>s.church===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const link = u => u ? `<a href="${esc(/^https?:/.test(u)?u:'https://'+u)}" target="_blank" rel="noopener">${esc(u)}</a>` : '';
+  const tel = p => p ? `<a href="tel:${esc(p)}">${esc(p)}</a>` : '';
+  const rows = [['지역', c.region],['교단', c.denom],['담임목사', c.pastor],['관계 단계', c.stage],['주소', c.address],['교회 전화', tel(c.phone)],
+    ['교회 담당자', c.contact],['담당자 연락처', tel(c.contactPhone)],['출석 성도', c.members?Number(c.members).toLocaleString()+'명':''],['주요 사역', c.ministry],
+    ['설교 방송', [c.broadcast,c.broadcastTime].filter(Boolean).join(' · ')],['홈페이지', link(c.homepage)],['유튜브', link(c.youtube)],['다음 할 일', c.todo],['메모', c.memo]]
+    .filter(r=>r[1]);
+  $('#drawer').innerHTML = `<div class="dh"><div><h3>${esc(c.name)}</h3><div class="sub">${c._last?`최근 방문 ${fmtD(c._last)} · ${c._days}일 전`:'방문 기록 없음'} · 방문 ${c._visits}회</div></div>
+      <button class="btn sm close" id="dClose">닫기</button></div>
+    <div class="db">
+      <div class="dacts">
+        <button class="btn primary sm" data-new="visit" data-church="${esc(c.name)}">+ 방문 기록</button>
+        <button class="btn sm" data-new="shoot" data-church="${esc(c.name)}">+ 촬영 일정</button>
+        <button class="btn sm" data-edit-church="${esc(c.name)}">정보 수정</button>
+        <button class="btn sm gold" data-brief="${esc(c.name)}">방문 전 브리핑 인쇄</button>
+      </div>
+      <div class="info">${rows.map(r=>`<span>${r[0]}</span><span>${r[0].match(/홈페이지|유튜브|전화|연락처/)?r[1]:esc(r[1]).replace(/\n/g,'<br>')}</span>`).join('')}</div>
+      <h2 class="sec">촬영 일정 <span class="cnt">${ss.length}</span></h2>
+      <div class="card list">${ss.length?ss.map(shootRow).join(''):empty('촬영 기록이 없습니다')}</div>
+      <h2 class="sec">방문·대화 기록 <span class="cnt">${vs.length}</span></h2>
+      <div class="card">${vs.length?vs.map(v=>visitItem(v,false)).join(''):empty('방문 기록이 없습니다')}</div>
+    </div>`;
+  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
+  $('#dClose').onclick = closeDrawer;
+}
+function closeDrawer(){ $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); }
+
+/* ---------- 브리핑 인쇄 ---------- */
+function brief(name){
+  const c = D.churches.find(x=>x.name===name); if(!c) return;
+  const vs = D.visits.filter(v=>v.church===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const open = vs.filter(v=>v.promise && v.status!=='완료');
+  const ss = D.shoots.filter(s=>s.church===name && s.date>=ymd(TODAY()) && s.status!=='취소');
+  const info = [['담임목사',c.pastor],['지역 · 교단',[c.region,c.denom].filter(Boolean).join(' · ')],['주소',c.address],['교회 전화',c.phone],['담당자',[c.contact,c.contactPhone].filter(Boolean).join(' ')],
+    ['출석 성도',c.members?c.members+'명':''],['주요 사역',c.ministry],['설교 방송',[c.broadcast,c.broadcastTime].filter(Boolean).join(' · ')],['관계 단계',c.stage],['메모',c.memo]].filter(r=>r[1]);
+  $('#print').innerHTML = `<h1>${esc(c.name)} 방문 브리핑</h1>
+    <div class="pm">출력일 ${fmtD(ymd(TODAY()))} · 최근 방문 ${c._last?fmtD(c._last):'없음'} · 누적 방문 ${c._visits}회</div>
+    <h2>교회 현황</h2><table>${info.map(r=>`<tr><th>${r[0]}</th><td>${esc(r[1])}</td></tr>`).join('')}</table>
+    <h2>이번 방문에서 챙길 것</h2><table>
+      <tr><th>다음 할 일</th><td>${esc(c.todo||'-')}</td></tr>
+      ${open.map(v=>`<tr><th>약속 (${fmtShort(v.due)||'기한 없음'})</th><td>${esc(v.promise)} <span style="color:#777">· ${fmtShort(v.date)} ${esc(v.met||'')}</span></td></tr>`).join('')}
+      ${ss.map(s=>`<tr><th>촬영 ${fmtShort(s.date)} ${esc(s.time||'')}</th><td>${esc([s.kind,s.title,s.status].filter(Boolean).join(' · '))}</td></tr>`).join('')}
+    </table>
+    <h2>지난 대화 (최근 5회)</h2><table>${vs.slice(0,5).map(v=>`<tr><th>${fmtShort(v.date)}<br><span style="font-weight:400">${esc(v.met||'')}</span></th><td>${esc(v.summary||'')}${v.request?`<br><b>요청:</b> ${esc(v.request)}`:''}</td></tr>`).join('') || '<tr><td>기록 없음</td></tr>'}</table>
+    <h2>오늘 대화 메모</h2><table><tr><td style="height:160pt"></td></tr></table>`;
+  window.print();
+}
+
+/* ---------- 폼 ---------- */
+function field(k, label, type='text', o={}){
+  const L = D.lists||{};
+  const req = o.req ? '<em>*</em>' : '';
+  const val = o.value ?? '';
+  let inp;
+  if(type==='select'){
+    const arr = o.options || L[o.list] || [];
+    inp = `<select name="${k}" ${o.req?'required':''}><option value="">선택</option>${arr.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+  } else if(type==='textarea'){
+    inp = `<textarea name="${k}" placeholder="${esc(o.ph||'')}">${esc(val)}</textarea>`;
+  } else if(type==='church'){
+    inp = `<input name="${k}" list="dlChurch" value="${esc(val)}" ${o.req?'required':''} placeholder="교회명 선택 또는 입력"><datalist id="dlChurch">${D.churches.map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist>`;
+  } else {
+    inp = `<input name="${k}" type="${type}" value="${esc(val)}" ${o.req?'required':''} placeholder="${esc(o.ph||'')}">`;
+  }
+  return `<div class="f ${o.full?'full':''}"><label>${label}${req}</label>${inp}${o.hint?`<span class="hint">${o.hint}</span>`:''}</div>`;
+}
+
+function openForm(kind, preset={}){
+  closeFab();
+  const t = ymd(TODAY());
+  let title, body, action;
+  if(kind==='visit'){
+    title='방문 기록 쓰기'; action='addVisit';
+    body = field('date','방문일','date',{req:1,value:preset.date||t}) + field('church','교회','church',{req:1,value:preset.church})
+      + field('met','만난 분','text',{ph:'예: 김OO 담임목사, 이OO 전도사'}) + field('purpose','방문 목적','select',{list:'방문 목적'})
+      + field('topic','주제','select',{list:'주제'}) + field('owner','담당','text',{value:localStorage.getItem('cts-owner')||''})
+      + field('summary','대화 요약','textarea',{full:1,ph:'목사님과 나눈 주요 이야기'})
+      + field('request','목사님 요청·관심사','textarea',{full:1,ph:'부탁하신 것, 관심 있어 하신 것'})
+      + field('promise','약속한 것(후속 조치)','text',{full:1,ph:'예: 12월 감사예배 촬영 일정 확정 연락'})
+      + field('due','후속 기한','date') + field('status','후속 상태','select',{list:'후속 상태',value:'대기'})
+      + field('note','비고','text',{full:1,ph:'예: 기도제목은 기사화하지 않음'});
+  } else if(kind==='shoot'){
+    title='촬영 일정 넣기'; action='addShoot';
+    body = field('date','날짜','date',{req:1,value:preset.date||t}) + field('time','시간','time')
+      + field('church','교회','church',{req:1,value:preset.church}) + field('kind','종류','select',{list:'촬영 종류'})
+      + field('title','제목·내용','text',{full:1,ph:'예: 어르신 무료 급식 10주년'})
+      + field('guest','출연·인터뷰','text') + field('place','장소','text')
+      + field('owner','담당','text',{value:localStorage.getItem('cts-owner')||''}) + field('status','진행 상태','select',{list:'진행 상태',value:'협의 중'})
+      + field('airDate','송출 예정일','date') + field('permission','교회 게시 허락','select',{list:'게시 허락',value:'확인 전'})
+      + field('gear','장비·준비물','text',{full:1,ph:'예: 무선 핀마이크 2, 짐벌 / 신앙에세이는 녹화 4분 이내'})
+      + field('note','비고','text',{full:1});
+  } else {
+    const c = preset.edit ? D.churches.find(x=>x.name===preset.edit) || {} : {};
+    title = preset.edit ? '교회 정보 수정' : '교회 추가'; action='saveChurch';
+    body = `<input type="hidden" name="_origName" value="${esc(c.name||'')}">`
+      + field('name','교회명','text',{req:1,value:c.name,hint:'방문 기록·촬영 일정과 같은 이름으로 써야 연결됩니다'}) + field('region','지역(지사)','select',{list:'지역(지사)',value:c.region})
+      + field('pastor','담임목사','text',{value:c.pastor}) + field('stage','관계 단계','select',{list:'관계 단계',value:c.stage})
+      + field('denom','교단','text',{value:c.denom}) + field('members','출석 성도(명)','number',{value:c.members})
+      + field('address','주소','text',{full:1,value:c.address})
+      + field('phone','교회 전화','tel',{value:c.phone}) + field('contact','교회 담당자','text',{value:c.contact})
+      + field('contactPhone','담당자 연락처','tel',{value:c.contactPhone}) + field('broadcast','설교 방송','select',{list:'설교 방송',value:c.broadcast})
+      + field('broadcastTime','방송 요일·시간','text',{value:c.broadcastTime}) + field('homepage','홈페이지','text',{value:c.homepage})
+      + field('youtube','유튜브','text',{full:1,value:c.youtube})
+      + field('ministry','주요 사역·특징','textarea',{full:1,value:c.ministry})
+      + field('todo','다음 할 일','text',{full:1,value:c.todo}) + field('memo','메모','textarea',{full:1,value:c.memo});
+  }
+  $('#panel').innerHTML = `<form id="theForm"><div class="ph"><h3>${title}</h3><button type="button" class="btn sm ghost" style="margin-left:auto" id="fClose">닫기</button></div>
+    <div class="pb"><div class="fgrid">${body}</div></div>
+    <div class="pf"><button type="button" class="btn" id="fCancel">취소</button><button class="btn primary" type="submit">시트에 저장</button></div></form>`;
+  $('#modal').classList.remove('hidden'); $('#scrim').classList.add('on');
+  const close = () => { $('#modal').classList.add('hidden'); if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on'); };
+  $('#fClose').onclick = close; $('#fCancel').onclick = close;
+  $('#theForm').onsubmit = async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    if(data.owner) localStorage.setItem('cts-owner', data.owner);
+    if(kind!=='church' && data.church && !D.churches.some(c=>c.name===data.church)){
+      if(!confirm(`'${data.church}'은(는) 교회 현황에 없습니다. 그대로 저장할까요?\n(나중에 교회 추가에서 같은 이름으로 등록하면 연결됩니다)`)) return;
+    }
+    busy(true);
+    try { D = await api(action, data); close(); fillFilters(); render(); toast('시트에 저장했습니다');
+      if($('#drawer').classList.contains('on')) openChurch(kind==='church'?data.name:data.church);
+    } catch(err){ toast(err.message); }
+    finally { busy(false); }
+  };
+}
+
+async function updateVisit(id, fields, msg){
+  busy(true);
+  try { D = await api('update', {table:'visit', id, fields}); render(); toast(msg);
+    if($('#drawer').classList.contains('on')){ const v=D.visits.find(x=>x.id===id); if(v) openChurch(v.church); } }
+  catch(err){ toast(err.message); } finally { busy(false); }
+}
+
+function openShoot(id){
+  const s = D.shoots.find(x=>x.id===id); if(!s) return;
+  const L = D.lists||{};
+  $('#panel').innerHTML = `<div class="ph"><h3>${esc(s.church)}</h3><button type="button" class="btn sm ghost" style="margin-left:auto" id="fClose">닫기</button></div>
+    <div class="pb"><div class="info" style="border:0;padding:0">
+      ${[['날짜',fmtD(s.date)+' '+(s.time||'')],['종류',s.kind],['제목·내용',s.title],['출연·인터뷰',s.guest],['장소',s.place],['담당',s.owner],['송출 예정일',fmtD(s.airDate)],['장비·준비물',s.gear],['비고',s.note]]
+        .filter(r=>r[1]&&String(r[1]).trim()).map(r=>`<span>${r[0]}</span><span>${esc(r[1])}</span>`).join('')}
+    </div>
+    <div class="fgrid" style="margin-top:16px">
+      <div class="f"><label>진행 상태</label><select id="sStatus">${(L['진행 상태']||[]).map(x=>`<option ${x===s.status?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
+      <div class="f"><label>교회 게시 허락</label><select id="sPerm">${(L['게시 허락']||[]).map(x=>`<option ${x===s.permission?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
+      <div class="f"><label>송출 예정일</label><input type="date" id="sAir" value="${esc(s.airDate||'')}"></div>
+      <div class="f"><label>날짜 변경</label><input type="date" id="sDate" value="${esc(s.date||'')}"></div>
+    </div></div>
+    <div class="pf"><button class="btn" data-church-open="${esc(s.church)}">교회 보기</button><button class="btn primary" id="sSave">변경 저장</button></div>`;
+  $('#modal').classList.remove('hidden'); $('#scrim').classList.add('on');
+  const close = () => { $('#modal').classList.add('hidden'); if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on'); };
+  $('#fClose').onclick = close;
+  $('#sSave').onclick = async () => {
+    busy(true);
+    try { D = await api('update', {table:'shoot', id, fields:{status:$('#sStatus').value, permission:$('#sPerm').value, airDate:$('#sAir').value, date:$('#sDate').value}});
+      close(); render(); toast('일정을 바꿨습니다'); if($('#drawer').classList.contains('on')) openChurch(s.church); }
+    catch(err){ toast(err.message); } finally { busy(false); }
+  };
+}
+
+/* ---------- 이벤트 ---------- */
+function closeFab(){ $('#fabmenu').classList.add('hidden'); }
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-v],[data-go],[data-new],[data-church],[data-church-open],[data-done],[data-undo],[data-shoot],[data-edit-church],[data-brief],[data-day]');
+  if(!t) { if(!e.target.closest('#fab')) closeFab(); return; }
+  if(t.dataset.done){ e.stopPropagation(); return updateVisit(t.dataset.done, {status:'완료'}, '완료로 표시했습니다'); }
+  if(t.dataset.undo){ return updateVisit(t.dataset.undo, {status:'대기'}, '되돌렸습니다'); }
+  if(t.dataset.new){ return openForm(t.dataset.new, {church:t.dataset.church, date:t.dataset.date}); }
+  if(t.dataset.editChurch){ return openForm('church', {edit:t.dataset.editChurch}); }
+  if(t.dataset.brief){ return brief(t.dataset.brief); }
+  if(t.dataset.shoot){ return openShoot(t.dataset.shoot); }
+  if(t.dataset.churchOpen){ $('#modal').classList.add('hidden'); return openChurch(t.dataset.churchOpen); }
+  if(t.dataset.day){ calSel = t.dataset.day; return renderShoots(); }
+  if(t.dataset.church){ return openChurch(t.dataset.church); }
+  if(t.dataset.v){ closeDrawer(); return show(t.dataset.v); }
+  if(t.dataset.go){ return show(t.dataset.go); }
+});
+$('#fab').onclick = e => { e.stopPropagation(); $('#fabmenu').classList.toggle('hidden'); };
+$('#scrim').onclick = () => { if(!$('#modal').classList.contains('hidden')) { $('#modal').classList.add('hidden'); if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on'); } else closeDrawer(); };
+['#chQ','#chRegion','#chStage','#chSort'].forEach(s=>$(s).addEventListener('input', renderChurches));
+['#vQ','#vChurch','#vTopic','#vStatus'].forEach(s=>$(s).addEventListener('input', renderVisits));
+$('#refreshBtn').onclick = async () => { busy(true); try { D = await api('load'); fillFilters(); render(); toast('최신 내용으로 불러왔습니다'); } catch(err){ toast(err.message); } finally { busy(false); } };
+$('#logoutBtn').onclick = () => { if(confirm('이 기기에서 로그아웃할까요?')) logout(); };
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ $('#modal').classList.add('hidden'); closeDrawer(); } });
+boot();
+</script>
+</body>
+</html>
